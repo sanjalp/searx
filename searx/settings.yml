@@ -237,9 +237,10 @@ engines:
 #       require_api_key: false
 #       results: HTML
 
-  # - name : bing
-  #   engine : bing
-  #   shortcut : bi
+  - name : bing
+    engine : bing
+    shortcut : bi
+    search_sites : True
 
 #   - name : bing images
 #     engine : bing_images
@@ -550,13 +551,13 @@ engines:
 #       require_api_key: false
 #       results: JSON
 
-  # - name : google
-  #   engine : google
-  #   shortcut : go
-  #   use_mobile_ui: false
-  #   search_sites: True
-  #   # additional_tests:
-  #   #   android: *test_android
+  - name : google
+    engine : google
+    shortcut : go
+    use_mobile_ui: false
+    search_sites : True
+    # additional_tests:
+    #   android: *test_android
 
 #   - name : google images
 #     engine : google_images
@@ -1794,3 +1795,4 @@ search_sites:
     - https://news.ycombinator.com/
     - https://indieweb.xyz/
     - https://tildes.net/
+    - https://lobste.rs/

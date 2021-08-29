@@ -103,38 +103,67 @@ class Search:
         # max of all selected engine timeout
         default_timeout = 0
 
-        # start search-reqest for all selected engines
-        for engineref in self.search_query.engineref_list:
-            processor = processors[engineref.name]
+        # for search_sites requests, distribute searches over all engines
+        search_sites = set()
+        for search_sites_group in self.search_query.search_sites_groups:
+            search_sites |= set(settings.get('search_sites', {}).get(search_sites_group))
+        search_sites = list(search_sites)
 
-            # set default request parameters
-            request_params = processor.get_params(self.search_query, engineref.category)
-            if request_params is None:
-                continue
+        if search_sites:
+            # From https://stackoverflow.com/a/2135920/4169215
+            def split(a, n):
+                k, m = divmod(len(a), n)
+                return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-            search_sites = set()
-            for search_sites_group in self.search_query.search_sites_groups:
-                search_sites |= set(settings.get('search_sites', {}).get(search_sites_group))
+            def valid_engineref(engineref):
+                processor = processors[engineref.name]
+                request_params = processor.get_params(self.search_query, engineref.category)
+                return (request_params is not None) and (getattr(engines[engineref.name], 'search_sites', None))
 
-            if search_sites:
-                if getattr(engines[engineref.name], 'search_sites', None):
-                    with threading.RLock():
-                        processor.engine.stats['sent_search_count'] += len(search_sites)
+            enginerefs = list(filter(valid_engineref, self.search_query.engineref_list))
+            enginerefs = dict(zip(map(lambda x: x.name, enginerefs), enginerefs))
 
-                    for search_site in search_sites:
-                        site_query = self.search_query.query + " site:" + search_site
+            search_sites_by_engine = dict(zip(enginerefs.keys(), split(search_sites, len(enginerefs))))
 
-                        # append request to list
-                        requests.append((engineref.name, site_query, request_params))
-            else:
+            for engineref in enginerefs.values():
+                processor = processors[engineref.name]
+
+                # set default request parameters
+                request_params = processor.get_params(self.search_query, engineref.category)
+                if request_params is None:
+                    continue
+
+                search_sites = search_sites_by_engine[engineref.name]
+
+                with threading.RLock():
+                    processor.engine.stats['sent_search_count'] += len(search_sites)
+
+                for search_site in search_sites:
+                    site_query = self.search_query.query + " site:" + search_site
+
+                    # append request to list
+                    requests.append((engineref.name, site_query, request_params))
+
+                # update default_timeout
+                default_timeout = max(default_timeout, processor.engine.timeout)
+        else:
+            # for regular search, start search-reqest for each selected engines
+            for engineref in self.search_query.engineref_list:
+                processor = processors[engineref.name]
+
+                # set default request parameters
+                request_params = processor.get_params(self.search_query, engineref.category)
+                if request_params is None:
+                    continue
+
                 with threading.RLock():
                     processor.engine.stats['sent_search_count'] += 1
 
                 # append request to list
                 requests.append((engineref.name, self.search_query.query, request_params))
 
-            # update default_timeout
-            default_timeout = max(default_timeout, processor.engine.timeout)
+                # update default_timeout
+                default_timeout = max(default_timeout, processor.engine.timeout)
 
         # adjust timeout
         actual_timeout = default_timeout
