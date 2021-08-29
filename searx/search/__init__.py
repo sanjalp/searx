@@ -174,7 +174,7 @@ class Search:
             th._timeout = False
             th._engine_name = engine_name
             if requests_per_engine[engine_name] > 1:
-                sleep(0.2)
+                sleep(0.5)
             th.start()
 
         for th in threading.enumerate():
