@@ -112,15 +112,18 @@ class Search:
             if request_params is None:
                 continue
 
-            if settings['search_sites'] and getattr(engines[engineref.name], 'search_sites', None):
-                with threading.RLock():
-                    processor.engine.stats['sent_search_count'] += len(settings['search_sites'])
+            search_sites = settings.get('search_sites', {}).get(self.search_query.search_sites_group)
 
-                for search_site in settings['search_sites']:
-                    site_query = self.search_query.query + " site:" + search_site
+            if search_sites:
+                if getattr(engines[engineref.name], 'search_sites', None):
+                    with threading.RLock():
+                        processor.engine.stats['sent_search_count'] += len(search_sites)
 
-                    # append request to list
-                    requests.append((engineref.name, site_query, request_params))
+                    for search_site in search_sites:
+                        site_query = self.search_query.query + " site:" + search_site
+
+                        # append request to list
+                        requests.append((engineref.name, site_query, request_params))
             else:
                 with threading.RLock():
                     processor.engine.stats['sent_search_count'] += 1

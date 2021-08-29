@@ -231,6 +231,14 @@ class BangParser(QueryPartParser):
             if engine_shortcut.startswith(value):
                 self._add_autocomplete(first_char + engine_shortcut)
 
+class SearchSiteGroupParser(QueryPartParser):
+    @staticmethod
+    def check(raw_value):
+        return raw_value.startswith('#')
+
+    def __call__(self, raw_value):
+        self.raw_text_query.search_sites_group = raw_value[1:]
+        return True
 
 class RawTextQuery:
     """parse raw text query (the value from the html input)"""
@@ -239,7 +247,8 @@ class RawTextQuery:
         TimeoutParser,  # this force the timeout
         LanguageParser,  # this force a language
         ExternalBangParser,  # external bang (must be before BangParser)
-        BangParser  # this force a engine or category
+        BangParser,  # this force a engine or category
+        SearchSiteGroupParser
     ]
 
     def __init__(self, query, disabled_engines):
@@ -252,6 +261,7 @@ class RawTextQuery:
         self.languages = []
         self.timeout_limit = None
         self.external_bang = None
+        self.search_sites_group = None
         self.specific = False
         self.autocomplete_list = []
         # internal properties
@@ -323,6 +333,7 @@ class RawTextQuery:
                + f"languages={self.languages!r} " \
                + f"timeout_limit={self.timeout_limit!r} "\
                + f"external_bang={self.external_bang!r} " \
+               + f"search_sites_group={self.search_sites_group!r} "\
                + f"specific={self.specific!r} " \
                + f"enginerefs={self.enginerefs!r}\n  " \
                + f"autocomplete_list={self.autocomplete_list!r}\n  " \

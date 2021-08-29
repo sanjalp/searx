@@ -227,6 +227,7 @@ def get_search_query_from_webapp(preferences: Preferences, form: Dict[str, str])
     query_time_range = parse_time_range(form)
     query_timeout = parse_timeout(form, raw_text_query)
     external_bang = raw_text_query.external_bang
+    search_sites_group = raw_text_query.search_sites_group
     engine_data = parse_engine_data(form)
 
     if not is_locked('categories') and raw_text_query.enginerefs and raw_text_query.specific:
@@ -243,7 +244,7 @@ def get_search_query_from_webapp(preferences: Preferences, form: Dict[str, str])
         validate_engineref_list(query_engineref_list, preferences)
 
     return (SearchQuery(query, query_engineref_list, query_lang, query_safesearch, query_pageno,
-                        query_time_range, query_timeout, external_bang=external_bang,
+                        query_time_range, query_timeout, search_sites_group=search_sites_group,  external_bang=external_bang,
                         engine_data=engine_data),
             raw_text_query,
             query_engineref_list_unknown,
