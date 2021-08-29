@@ -25,7 +25,7 @@ class SearchQuery:
     """container for all the search parameters (query, language, etc...)"""
 
     __slots__ = 'query', 'engineref_list', 'lang', 'safesearch', 'pageno', 'time_range',\
-                'timeout_limit', 'search_sites_group', 'external_bang', 'engine_data'
+                'timeout_limit', 'search_sites_groups', 'external_bang', 'engine_data'
 
     def __init__(self,
                  query: str,
@@ -35,7 +35,7 @@ class SearchQuery:
                  pageno: int=1,
                  time_range: typing.Optional[str]=None,
                  timeout_limit: typing.Optional[float]=None,
-                 search_sites_group: typing.Optional[str]=None,
+                 search_sites_groups: typing.Optional[str]=None,
                  external_bang: typing.Optional[str]=None,
                  engine_data: typing.Optional[typing.Dict[str, str]]=None):
         self.query = query
@@ -45,7 +45,7 @@ class SearchQuery:
         self.pageno = pageno
         self.time_range = time_range
         self.timeout_limit = timeout_limit
-        self.search_sites_group = search_sites_group
+        self.search_sites_groups = search_sites_groups
         self.external_bang = external_bang
         self.engine_data = engine_data or {}
 
@@ -56,7 +56,7 @@ class SearchQuery:
     def __repr__(self):
         return "SearchQuery({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})".\
                format(self.query, self.engineref_list, self.lang, self.safesearch,
-                      self.pageno, self.time_range, self.timeout_limit, self.search_sites_group, self.external_bang)
+                      self.pageno, self.time_range, self.timeout_limit, self.search_sites_groups, self.external_bang)
 
     def __eq__(self, other):
         return self.query == other.query\
@@ -66,9 +66,9 @@ class SearchQuery:
             and self.pageno == other.pageno\
             and self.time_range == other.time_range\
             and self.timeout_limit == other.timeout_limit\
-            and self.search_sites_group == other.search_sites_group\
+            and self.search_sites_groups == other.search_sites_groups\
             and self.external_bang == other.external_bang
 
     def __hash__(self):
         return hash((self.query, tuple(self.engineref_list), self.lang, self.safesearch, self.pageno, self.time_range,
-                     self.timeout_limit, self.search_sites_group, self.external_bang))
+                     self.timeout_limit, self.search_sites_groups, self.external_bang))

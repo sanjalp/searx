@@ -112,7 +112,9 @@ class Search:
             if request_params is None:
                 continue
 
-            search_sites = settings.get('search_sites', {}).get(self.search_query.search_sites_group)
+            search_sites = set()
+            for search_sites_group in self.search_query.search_sites_groups:
+                search_sites |= set(settings.get('search_sites', {}).get(search_sites_group))
 
             if search_sites:
                 if getattr(engines[engineref.name], 'search_sites', None):

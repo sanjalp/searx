@@ -237,7 +237,7 @@ class SearchSiteGroupParser(QueryPartParser):
         return raw_value.startswith('#')
 
     def __call__(self, raw_value):
-        self.raw_text_query.search_sites_group = raw_value[1:]
+        self.raw_text_query.search_sites_groups.add(raw_value[1:])
         return True
 
 class RawTextQuery:
@@ -261,7 +261,7 @@ class RawTextQuery:
         self.languages = []
         self.timeout_limit = None
         self.external_bang = None
-        self.search_sites_group = None
+        self.search_sites_groups = set()
         self.specific = False
         self.autocomplete_list = []
         # internal properties
@@ -333,7 +333,7 @@ class RawTextQuery:
                + f"languages={self.languages!r} " \
                + f"timeout_limit={self.timeout_limit!r} "\
                + f"external_bang={self.external_bang!r} " \
-               + f"search_sites_group={self.search_sites_group!r} "\
+               + f"search_sites_groups={self.search_sites_groups!r} "\
                + f"specific={self.specific!r} " \
                + f"enginerefs={self.enginerefs!r}\n  " \
                + f"autocomplete_list={self.autocomplete_list!r}\n  " \
