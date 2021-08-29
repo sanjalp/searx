@@ -553,6 +553,7 @@ engines:
     engine : google
     shortcut : go
     use_mobile_ui: false
+    search_sites: True
     # additional_tests:
     #   android: *test_android
 
@@ -1695,3 +1696,7 @@ doi_resolvers :
   sci-hub.it.nf : 'https://sci-hub.it.nf/'
 
 default_doi_resolver : 'oadoi.org'
+
+search_sites:
+  - 'https://naturallyella.com/'
+  - 'https://www.bbcgoodfood.com/recipes'

@@ -28,6 +28,7 @@ from searx.external_bang import get_bang_url
 from searx.results import ResultContainer
 from searx import logger
 from searx.plugins import plugins
+from searx.engines import engines
 from searx.search.models import EngineRef, SearchQuery
 from searx.search.processors import processors, initialize as initialize_processors
 from searx.search.checker import initialize as initialize_checker
@@ -111,11 +112,21 @@ class Search:
             if request_params is None:
                 continue
 
-            with threading.RLock():
-                processor.engine.stats['sent_search_count'] += 1
+            if settings['search_sites'] and getattr(engines[engineref.name], 'search_sites', None):
+                with threading.RLock():
+                    processor.engine.stats['sent_search_count'] += len(settings['search_sites'])
 
-            # append request to list
-            requests.append((engineref.name, self.search_query.query, request_params))
+                for search_site in settings['search_sites']:
+                    site_query = self.search_query.query + " site:" + search_site
+
+                    # append request to list
+                    requests.append((engineref.name, site_query, request_params))
+            else:
+                with threading.RLock():
+                    processor.engine.stats['sent_search_count'] += 1
+
+                # append request to list
+                requests.append((engineref.name, self.search_query.query, request_params))
 
             # update default_timeout
             default_timeout = max(default_timeout, processor.engine.timeout)
