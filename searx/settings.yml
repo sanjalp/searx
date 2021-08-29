@@ -398,10 +398,11 @@ engines:
 #     weight : 2
 #     tests: *tests_infobox
 
-#   - name : duckduckgo
-#     engine : duckduckgo
-#     shortcut : ddg
-#     disabled : True
+  - name : duckduckgo
+    engine : duckduckgo
+    shortcut : ddg
+    search_sites : True
+    # disabled : True
 
 #   - name : duckduckgo images
 #     engine : duckduckgo_images
@@ -549,13 +550,13 @@ engines:
 #       require_api_key: false
 #       results: JSON
 
-  - name : google
-    engine : google
-    shortcut : go
-    use_mobile_ui: false
-    search_sites: True
-    # additional_tests:
-    #   android: *test_android
+  # - name : google
+  #   engine : google
+  #   shortcut : go
+  #   use_mobile_ui: false
+  #   search_sites: True
+  #   # additional_tests:
+  #   #   android: *test_android
 
 #   - name : google images
 #     engine : google_images
