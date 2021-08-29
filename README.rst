@@ -1,6 +1,10 @@
 .. SPDX-License-Identifier: AGPL-3.0-or-later
 
-**NOTE: This is a fork of searx to specifically provide the search_sites feature for my own benefit.**
+**NOTE: This is a fork of searx to specifically provide a custom search feature for my own use, similar to Rollyo or Bing Custom Search.**
+
+The ``search_sites`` key in `settings.yml`_ defines groups of 'search sites'. For example, the ``recipe`` key lists some cooking websites whose recipes I enjoy. Include ``#recipe`` in your search query to restrict your search to only the websites listed in that group.
+
+.. _settings.yml: https://github.com/wcerfgba/searx/blob/master/searx/settings.yml
 
 .. figure:: https://raw.githubusercontent.com/searx/searx/master/searx/static/themes/oscar/img/logo_searx_a.png
    :target: https://searx.github.io/searx/
