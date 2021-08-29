@@ -18,7 +18,7 @@ along with searx. If not, see < http://www.gnu.org/licenses/ >.
 import typing
 import gc
 import threading
-from time import time
+from time import time, sleep
 from uuid import uuid4
 from _thread import start_new_thread
 
@@ -159,6 +159,10 @@ class Search:
     def search_multiple_requests(self, requests):
         search_id = uuid4().__str__()
 
+        requests_per_engine = {}
+        for engine_name, _, _ in requests:
+            requests_per_engine[engine_name] = requests_per_engine.get(engine_name, 0) + 1
+
         for engine_name, query, request_params in requests:
             th = threading.Thread(
                 target=processors[engine_name].search,
@@ -167,6 +171,8 @@ class Search:
             )
             th._timeout = False
             th._engine_name = engine_name
+            if requests_per_engine[engine_name] > 1:
+                sleep(0.2)
             th.start()
 
         for th in threading.enumerate():
