@@ -1800,3 +1800,5 @@ search_sites:
     - https://indieweb.xyz/
     - https://tildes.net/
     - https://lobste.rs/
+  :
+    -https://z-lib.is/
